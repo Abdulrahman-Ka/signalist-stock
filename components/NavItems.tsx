@@ -1,6 +1,7 @@
 "use client";
 
-import { NAV_ITEMS } from "@/lib/conatants";
+import { NAV_ITEMS } from "@/lib/constants";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NavItems = () => {
@@ -17,11 +18,11 @@ const NavItems = () => {
       {NAV_ITEMS.map(({ href, label }) => (
         <li
           key={href}
-          className={`hover:text-yellow-500 transition-colors ${
-            isActive(href) && "text-gray-100"
+          className={`hover:text-yellow-500 transition-colors cursor-pointer ${
+            isActive(href) ? "text-gray-100" : ""
           }`}
         >
-          {label}
+          <Link href={href}>{label}</Link>
         </li>
       ))}
     </ul>
