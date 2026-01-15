@@ -20,6 +20,7 @@ const SignUp = () => {
   } = useForm<SignUpFormData>({
     defaultValues: {
       fullName: "",
+      email: "",
       password: "",
       country: "US",
       investmentGoals: "Growth",
