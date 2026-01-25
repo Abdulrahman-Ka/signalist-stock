@@ -1,7 +1,15 @@
+import { auth } from "@/lib/better-auth/auth";
+import { reddit } from "better-auth";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session?.user) redirect("/");
+
   return (
     <main className="auth-layout">
       <section className="auth-left-section scrollbar-hide-default">
@@ -21,7 +29,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
         <div className="z-10 relative lg:mt-4 lg:mb-16">
           <blockquote className="auth-blockquote">
             Signalist turned my watchList into a winning list. The alerts are
-            spot-on and save me hours of research.
+            spot-on and I feel more confident making moves in the market.
           </blockquote>
           <div className="flex items-center justify-between">
             <div>
