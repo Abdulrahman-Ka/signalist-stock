@@ -4,14 +4,19 @@ import FooterLink from "@/components/forms/FooterLink";
 import InputField from "@/components/forms/InputField";
 import SelectField from "@/components/forms/SelectField";
 import { Button } from "@/components/ui/button";
+import { signUpWithEmail } from "@/lib/actions/auth.actions";
 import {
   INVESTMENT_GOALS,
   PREFERRED_INDUSTRIES,
   RISK_TOLERANCE_OPTIONS,
 } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const SignUp = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -32,9 +37,19 @@ const SignUp = () => {
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      console.log({ data });
+      const result = await signUpWithEmail(data);
+      if (result.success) {
+        router.push("/");
+        return;
+      }
     } catch (error) {
       console.error(error);
+      toast.error("Sign up failed", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to create an account",
+      });
     }
   };
 
@@ -58,16 +73,10 @@ const SignUp = () => {
           error={errors.email}
           validation={{
             required: "Email  is required",
-            pattern: /^\w+@\w+\.\w+$/,
+            pattern: /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/,
             message: "Email address is required",
           }}
           register={register}
-        />
-        <CountrySelectField
-          name={"country"}
-          label={"Country"}
-          control={control}
-          error={errors.country}
         />
         <InputField
           name={"password"}
@@ -77,6 +86,12 @@ const SignUp = () => {
           error={errors.password}
           validation={{ required: "Password is required", minLength: 8 }}
           register={register}
+        />
+        <CountrySelectField
+          name={"country"}
+          label={"Country"}
+          control={control}
+          error={errors.country}
         />
 
         <SelectField
@@ -109,7 +124,9 @@ const SignUp = () => {
           disabled={isSubmitting}
           className="yellow-btn w-full mt-5"
         >
-          {isSubmitting ? "Creating account" : "Start Your Investing Journey"}
+          {isSubmitting
+            ? "Creating account..."
+            : "Start Your Investing Journey"}
         </Button>
         <FooterLink
           text="Already have an account?"

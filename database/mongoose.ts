@@ -9,14 +9,15 @@ declare global {
   };
 }
 
-const cached = global.mongooseCache;
+let cached = global.mongooseCache;
 
 if (!cached) {
-  cached: global.mongooseCache = { conn: null, promise: null };
+  cached = global.mongooseCache = { conn: null, promise: null };
 }
 
 export const connectToDatabase = async () => {
   if (!MONGODB_URI) throw new Error("MONGODB_URI must be set within .env");
+
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
@@ -25,9 +26,12 @@ export const connectToDatabase = async () => {
 
   try {
     cached.conn = await cached.promise;
-  } catch (error) {
+  } catch (err) {
     cached.promise = null;
-    throw error;
+    throw err;
   }
+
   console.log(`Connected to database ${process.env.NODE_ENV} - ${MONGODB_URI}`);
+
+  return cached.conn;
 };

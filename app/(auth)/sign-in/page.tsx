@@ -2,7 +2,10 @@
 import FooterLink from "@/components/forms/FooterLink";
 import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
+import { signInWithEmail } from "@/lib/actions/auth.actions";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const SignIn = () => {
   const {
@@ -17,11 +20,21 @@ const SignIn = () => {
     mode: "onBlur",
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: SignInFormData) => {
     try {
-      console.log({ data });
+      const result = await signInWithEmail(data);
+      if (result.success) {
+        router.push("/");
+        return;
+      }
     } catch (error) {
       console.error(error);
+      toast.error("Sign in failed", {
+        description:
+          error instanceof Error ? error.message : "Failed to sign in",
+      });
     }
   };
 
@@ -38,7 +51,7 @@ const SignIn = () => {
           error={errors.email}
           validation={{
             required: "Email  is required",
-            pattern: /^\w+@\w+\.\w+$/,
+            pattern: /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/,
             message: "Please enter a valid email address",
           }}
         />
@@ -57,7 +70,7 @@ const SignIn = () => {
           disabled={isSubmitting}
           className="yellow-btn w-full mt-5"
         >
-          {isSubmitting ? "Signing in" : "Sign In"}
+          {isSubmitting ? "Signing in..." : "Sign In"}
         </Button>
         <FooterLink
           text="Don't have an account?"
