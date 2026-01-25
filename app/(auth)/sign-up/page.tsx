@@ -40,6 +40,7 @@ const SignUp = () => {
       const result = await signUpWithEmail(data);
       if (result.success) {
         router.push("/");
+        return;
       }
     } catch (error) {
       console.error(error);

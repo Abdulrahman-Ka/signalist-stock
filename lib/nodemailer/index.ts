@@ -16,10 +16,10 @@ export const sendWelcomeEmail = async ({
 }: WelcomeEmailData) => {
   const htmlTemplate = WELCOME_EMAIL_TEMPLATE.replace("{{name}}", name).replace(
     "{{intro}}",
-    intro
+    intro,
   );
   const mailOptions = {
-    from: `"Signalist <signalist@Kallas.com"`,
+    from: `"Signalist" <signalist@Kallas.com>`,
     to: email,
     subject: `Welcome to Signalist - your stock market toolkit is ready!`,
     text: "Thanks for joining Signalist",

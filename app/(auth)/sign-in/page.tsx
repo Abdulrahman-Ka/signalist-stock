@@ -27,6 +27,7 @@ const SignIn = () => {
       const result = await signInWithEmail(data);
       if (result.success) {
         router.push("/");
+        return;
       }
     } catch (error) {
       console.error(error);
